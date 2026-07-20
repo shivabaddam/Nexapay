@@ -1,0 +1,20 @@
+# Build output is produced inside the image; copying the host's target/ in
+# would both bloat the context and risk shipping stale classes.
+target/
+
+# VCS and IDE state
+.git/
+.gitignore
+.github/
+.idea/
+.vscode/
+*.iml
+
+# Docker's own files
+Dockerfile
+.dockerignore
+
+# Docs and local noise
+README.md
+*.log
+.DS_Store

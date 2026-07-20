@@ -45,6 +45,36 @@ The API starts at:
 - Swagger UI: `http://localhost:8080/swagger-ui/index.html`
 - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
 
+## Run with Docker
+
+No local JDK or Maven is needed; the image builds the app itself.
+
+```bash
+docker build -t nexapay-banking-api .
+docker run --rm -p 8080:8080 nexapay-banking-api
+```
+
+Configuration is passed as environment variables, and JVM flags via
+`JAVA_OPTS`:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e NEXAPAY_SEED_ENABLED=false \
+  -e JAVA_OPTS="-XX:MaxRAMPercentage=50.0" \
+  nexapay-banking-api
+```
+
+Notes on the image:
+
+- Multi-stage build: the JDK and Maven stay in the build stage, and only a JRE
+  ships in the final image.
+- The fat jar is split into Spring Boot layers so dependencies cache
+  separately from application code. Editing a source file rebuilds in seconds
+  rather than re-resolving dependencies.
+- Runs as a non-root `spring` user, with `java` as PID 1 so `docker stop`
+  shuts down gracefully.
+- `HEALTHCHECK` polls `/api/health`, so `docker ps` reports real readiness.
+
 ## Example Endpoints
 
 ### Discover Available Endpoints
