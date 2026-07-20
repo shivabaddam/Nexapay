@@ -31,6 +31,17 @@ The API starts at:
 
 ## Example Endpoints
 
+### Discover Available Endpoints
+
+`GET /` redirects to `/api`, which lists every available endpoint. The list is
+generated from the application's actual route mappings, so it stays accurate.
+
+```bash
+curl -L http://localhost:8080/
+# or directly
+curl http://localhost:8080/api
+```
+
 ### Health
 
 ```bash

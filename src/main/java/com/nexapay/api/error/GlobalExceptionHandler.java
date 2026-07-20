@@ -5,10 +5,13 @@ import com.nexapay.api.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -35,6 +38,29 @@ public class GlobalExceptionHandler {
         }
 
         return buildError(HttpStatus.BAD_REQUEST, "Validation failed", request.getRequestURI(), fieldErrors);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoEndpoint(NoResourceFoundException ex, HttpServletRequest request) {
+        String message = "No endpoint for " + request.getMethod() + " " + request.getRequestURI()
+                + ". See /api for the list of available endpoints.";
+        return buildError(HttpStatus.NOT_FOUND, message, request.getRequestURI(), Map.of());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiError> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex,
+                                                           HttpServletRequest request) {
+        String message = request.getMethod() + " is not supported for " + request.getRequestURI()
+                + ". Supported: " + String.join(", ", ex.getSupportedMethods() != null
+                        ? ex.getSupportedMethods() : new String[0]);
+        return buildError(HttpStatus.METHOD_NOT_ALLOWED, message, request.getRequestURI(), Map.of());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleUnreadableBody(HttpMessageNotReadableException ex,
+                                                         HttpServletRequest request) {
+        return buildError(HttpStatus.BAD_REQUEST, "Malformed or missing request body",
+                request.getRequestURI(), Map.of());
     }
 
     @ExceptionHandler(Exception.class)
