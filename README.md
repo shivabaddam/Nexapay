@@ -109,9 +109,3 @@ curl http://localhost:8080/api/accounts/500001/transactions
 ```
 
 ## Notes
-
-- This is an educational starter API and omits authentication/authorization.
-- `BigDecimal` is used for money handling with 2 decimal places.
-- Transfer locking is implemented to avoid race conditions in this in-memory example.
-# Nexapay
-# Nexapay
