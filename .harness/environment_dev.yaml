@@ -1,7 +1,0 @@
-environment:
-  name: dev
-  identifier: dev
-  orgIdentifier: default
-  projectIdentifier: nexapay
-  type: PreProduction
-  tags: {}
