@@ -18,7 +18,7 @@
     <description>Standalone in-memory Spring Boot banking API example</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
